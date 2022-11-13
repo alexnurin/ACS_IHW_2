@@ -123,21 +123,17 @@ main:
 .L4:
 	lea	rdi, .LC9[rip]              # запускаем ручной ввод
 	call	puts@PLT                # выводим сообщение "Input first string:"
-	mov	rax, QWORD PTR stdin[rip]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR stdin[rip]
 	call	input@PLT
 	mov	QWORD PTR -8[rbp], rax      # a = input(stdin)
 	lea	rdi, .LC10[rip]
 	call	puts@PLT                # выводим сообщение "Input second string:"
-	mov	rax, QWORD PTR stdin[rip]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR stdin[rip]
 	call	input@PLT
 	mov	QWORD PTR -16[rbp], rax     # b = input(stdin)
 .L3:
-	mov	rdx, QWORD PTR -16[rbp]
-	mov	rax, QWORD PTR -8[rbp]
-	mov	rsi, rdx
-	mov	rdi, rax
+	mov	rsi, QWORD PTR -16[rbp]
+	mov	rdi, QWORD PTR -8[rbp]
 	call	combination@PLT
 	mov	QWORD PTR -48[rbp], rax     # char *res = combination(a, b);
 	                                # res <=> -48[rbp]
@@ -150,16 +146,13 @@ main:
 	call	printf@PLT              # printf("%s", res);
 	jmp	.L10
 .L9:
-	mov	rax, QWORD PTR -24[rbp]
 	lea	rsi, .LC12[rip]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -24[rbp]
 	call	fopen@PLT
 	mov	QWORD PTR -56[rbp], rax     # FILE *output = fopen(output_file, "w")
 	                                # output <=> -56[rbp]
-	mov	rdx, QWORD PTR -56[rbp]
-	mov	rax, QWORD PTR -48[rbp]
-	mov	rsi, rdx
-	mov	rdi, rax
+	mov	rsi, QWORD PTR -56[rbp]
+	mov	rdi, QWORD PTR -48[rbp]
 	call	fputs@PLT               # fprintf(output, "%s", res);
 .L10:
 	mov	eax, 0

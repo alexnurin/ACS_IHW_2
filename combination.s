@@ -12,12 +12,10 @@ combination:
 	                                # a <=> -72[rbp]
 	mov	QWORD PTR -80[rbp], rsi     # char *b, получение второго параметра из rsi
 	                                # b <=> -80[rbp]
-	mov	rax, QWORD PTR -72[rbp]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -72[rbp]
 	call	strlen@PLT              # вызов strlen(a)
 	mov	rbx, rax
-	mov	rax, QWORD PTR -80[rbp]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -80[rbp]
 	call	strlen@PLT              # вызов strlen(b)
 	add	rax, rbx
 	add	rax, 1
@@ -78,14 +76,12 @@ combination:
 .L7:
 	add	r12d, 1       # cur_size++
 .L2:
-	mov	eax, r12d     # for (..; i < ..) {
-	movsx	rbx, eax
-	mov	rax, QWORD PTR -72[rbp]     # a -> rax
-	mov	rdi, rax
+	movsx	rbx, r12d     # for (..; i < ..) {
+	mov	rdi, QWORD PTR -72[rbp]     # a -> rax
 	call	strlen@PLT              # вызов strlen(a)
 	cmp	rbx, rax                    # for (..; i < strlen(a); ..) {
 	jb	.L8
-	mov	DWORD PTR -40[rbp], 0       # int i = 0 (второй внешний цикл)
+	mov	r12d, 0       # int i = 0 (второй внешний цикл)
 	                                # local i <=> -40[rbp]
 	jmp	.L9
 .L15:
@@ -100,7 +96,7 @@ combination:
 	mov	rax, QWORD PTR -64[rbp]
 	add	rax, rdx                    # c[j]
 	movzx	edx, BYTE PTR [rax]
-	mov	eax, DWORD PTR -40[rbp]
+	mov	eax, r12d
 	movsx	rcx, eax
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, rcx                    # b[i]
@@ -118,7 +114,7 @@ combination:
 .L12:
 	cmp	DWORD PTR -44[rbp], 0       # if (!found) {
 	jne	.L14
-	mov	eax, DWORD PTR -40[rbp]
+	mov	eax, r12d
 	movsx	rdx, eax
 	mov	rax, QWORD PTR -80[rbp]
 	lea	rcx, [rdx+rax]              # rcx = &b[i]
@@ -130,12 +126,11 @@ combination:
 	movzx	eax, BYTE PTR [rcx]     # c[cur_size++] = b[i];
 	mov	BYTE PTR [rdx], al
 .L14:
-	add	DWORD PTR -40[rbp], 1       # cur_size++
+	add	r12d, 1       # i++
 .L9:
-	mov	eax, DWORD PTR -40[rbp]     # аналогичный цикл, но для второй строки
+	mov	eax, r12d     # аналогичный цикл, но для второй строки
 	movsx	rbx, eax
-	mov	rax, QWORD PTR -80[rbp]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -80[rbp]
 	call	strlen@PLT              # вызов strlen(b)
 	cmp	rbx, rax                    # for (int i = 0; i < strlen(b); i++) {
 	jb	.L15

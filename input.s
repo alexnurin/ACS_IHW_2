@@ -13,16 +13,14 @@ input:
 	                            # size <=> -8[rbp]
 	mov	QWORD PTR -16[rbp], 0   # size_t cur_size = 2
 	                            # cur_size <=> -16[rbp]
-	mov	rax, QWORD PTR -8[rbp]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -8[rbp]
 	call	malloc@PLT          # malloc(size)
 	mov	QWORD PTR -24[rbp], rax # char *str = (char *) malloc((size) * sizeof(char))
 	                            # str <=> -24[rbp]
 	mov	rax, QWORD PTR -24[rbp]
 	mov	BYTE PTR [rax], 0       # str[0] = '\0'
 .L5:
-	mov	rax, QWORD PTR -40[rbp]
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -40[rbp]
 	call	getc@PLT            # getc(inputStream)
 	mov	BYTE PTR -25[rbp], al   # char ch = (char) getc(inputStream)
 	                            # ch <=> -25[rbp]
@@ -41,10 +39,8 @@ input:
 	cmp	QWORD PTR -8[rbp], rax      # if (cur_size + 1 >= size) {
 	ja	.L4
 	sal	QWORD PTR -8[rbp]
-	mov	rdx, QWORD PTR -8[rbp]      # size *= 2
-	mov	rax, QWORD PTR -24[rbp]     # str
-	mov	rsi, rdx
-	mov	rdi, rax
+	mov	rsi, QWORD PTR -8[rbp]      # size *= 2
+	mov	rdi, QWORD PTR -24[rbp]     # str
 	call	realloc@PLT             # realloc(str, size * sizeof(char))
 	mov	QWORD PTR -24[rbp], rax     # str = realloc(str, size * sizeof(char))
 .L4:
