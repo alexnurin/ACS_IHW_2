@@ -25,26 +25,27 @@ combination:
 	                                # size <=> -56[rbp]
 	mov	QWORD PTR -24[rbp], 0       # size_t cur_size = 0
 	                                # cur_size <=> -24[rbp]
+	mov	rax, QWORD PTR -56[rbp]
 	mov	rdi, rax
 	call	malloc@PLT              # вызов malloc(size)
 	mov	QWORD PTR -64[rbp], rax     # char *c = ..
 	                                # c <=> -64[rbp]
-	mov	r12d, 0       # int i = 0
+	mov	DWORD PTR -28[rbp], 0       # int i = 0
 	                                # local i <=> -28[rbp]
 	jmp	.L2
 .L8:
 	mov	DWORD PTR -32[rbp], 0       # int found = 0
 	                                # found <=> -32[rbp]
-	mov	r13d, 0       # for (int j = 0;...
+	mov	DWORD PTR -36[rbp], 0       # for (int j = 0;...
 	                                # local j <=> -36[rbp]
 	jmp	.L3
 .L6:
-	mov	eax, r13d
+	mov	eax, DWORD PTR -36[rbp]
 	movsx	rdx, eax
 	mov	rax, QWORD PTR -64[rbp]
 	add	rax, rdx                    # c[j]
 	movzx	edx, BYTE PTR [rax]
-	mov	eax, r12d
+	mov	eax, DWORD PTR -28[rbp]
 	movsx	rcx, eax
 	mov	rax, QWORD PTR -72[rbp]
 	add	rax, rcx                    # a[i]
@@ -54,17 +55,19 @@ combination:
 	mov	DWORD PTR -32[rbp], 1       # found = 1
 	jmp	.L5                         # break
 .L4:
-	add	r13d, 1
+	add	DWORD PTR -36[rbp], 1
 .L3:
-	movsx	rbx, r13d     # for (..; j < ...) {
-	mov	rdi, QWORD PTR -64[rbp]     # c
+	mov	eax, DWORD PTR -36[rbp]     # for (..; j < ...) {
+	movsx	rbx, eax
+	mov	rax, QWORD PTR -64[rbp]     # c
+	mov	rdi, rax
 	call	strlen@PLT              # вызов strlen(c)
 	cmp	rbx, rax                    # for (..; j < strlen(c); ..) {
 	jb	.L6
 .L5:
 	cmp	DWORD PTR -32[rbp], 0       # if (!found)
 	jne	.L7
-	mov	eax, r12d     # i
+	mov	eax, DWORD PTR -28[rbp]     # i
 	movsx	rdx, eax
 	mov	rax, QWORD PTR -72[rbp]     # a[i]
 	lea	rcx, [rdx+rax]              # rcx = &a[i]
@@ -76,9 +79,9 @@ combination:
 	movzx	eax, BYTE PTR [rcx]     # c[cur_size] = a[i];
 	mov	BYTE PTR [rdx], al
 .L7:
-	add	r12d, 1       # cur_size++
+	add	DWORD PTR -28[rbp], 1       # cur_size++
 .L2:
-	mov	eax, r12d     # for (..; i < ..) {
+	mov	eax, DWORD PTR -28[rbp]     # for (..; i < ..) {
 	movsx	rbx, eax
 	mov	rax, QWORD PTR -72[rbp]     # a -> rax
 	mov	rdi, rax
@@ -91,11 +94,11 @@ combination:
 .L15:
 	mov	DWORD PTR -44[rbp], 0       # int found = 0
 	                                # local found <=> -44[rbp]
-	mov	r13d, 0       # int j = 0 (второй внутренний цикл)
+	mov	DWORD PTR -48[rbp], 0       # int j = 0 (второй внутренний цикл)
 	                                # local j <=> -48[rbp]
 	jmp	.L10
 .L13:
-	mov	eax, r13d
+	mov	eax, DWORD PTR -48[rbp]
 	movsx	rdx, eax
 	mov	rax, QWORD PTR -64[rbp]
 	add	rax, rdx                    # c[j]
@@ -110,9 +113,9 @@ combination:
 	mov	DWORD PTR -44[rbp], 1
 	jmp	.L12
 .L11:
-	add	r13d, 1
+	add	DWORD PTR -48[rbp], 1
 .L10:
-	mov	eax, r13d
+	mov	eax, DWORD PTR -48[rbp]
 	cmp	QWORD PTR -24[rbp], rax    # for (int j = 0; j < cur_size; j++) {
 	ja	.L13
 .L12:
