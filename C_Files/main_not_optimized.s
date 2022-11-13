@@ -2,7 +2,7 @@
 	.intel_syntax noprefix
 	.text
 	.section	.rodata
-.LC0:                               # определяем константные строки
+.LC0:
 	.string	""
 .LC1:
 	.string	"-f"
@@ -33,13 +33,12 @@
 	.globl	main
 	.type	main, @function
 main:
+	endbr64
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 80
-	mov	DWORD PTR -68[rbp], edi # принимаем число аргументов из консоли
-	                            # argc <=> -68[rbp]
-	mov	QWORD PTR -80[rbp], rsi # принимаем аргументы консоли
-	                            # argv <=> -80[rbp]
+	mov	DWORD PTR -68[rbp], edi # argc <=> -68[rbp]
+	mov	QWORD PTR -80[rbp], rsi # argv <=> -80[rbp]
 
 	lea	rax, .LC0[rip]
 	mov	QWORD PTR -8[rbp], rax  # char* a = rax = ""
@@ -65,11 +64,11 @@ main:
 	cmp	DWORD PTR -68[rbp], 2   # if (argc == 2) && ..
 	jne	.L4
 	mov	rax, QWORD PTR -80[rbp]
-	add	rax, 8                  # char это 8 бит
+	add	rax, 8
 	mov	rax, QWORD PTR [rax]
 	mov	rsi, rax
 	lea	rdi, .LC1[rip]          # "-f"
-	call	strcmp@PLT          # вызов strcmp("-f", argv[1])
+	call	strcmp@PLT
 	test	eax, eax
 	jne	.L4                     # .. && !strcmp("-f", argv[1])
 
@@ -102,7 +101,7 @@ main:
 	jne	.L6
 .L7:
 	lea	rdi, .LC7[rip]          # "Cannot open file."
-	call	puts@PLT            # вызов printf(_)
+	call	puts@PLT
 	mov	eax, 1
 	jmp	.L8                     # завершаем работу с кодом 1
 .L6:
@@ -112,27 +111,27 @@ main:
 	mov	rax, QWORD PTR -32[rbp]
 	mov	rdi, rax
 	call	input@PLT
-	mov	QWORD PTR -8[rbp], rax  # a = input(finputA)
+	mov	QWORD PTR -8[rbp], rax  # a = input(..)
 
 	mov	rax, QWORD PTR -40[rbp]
 	mov	rdi, rax
 	call	input@PLT
-	mov	QWORD PTR -16[rbp], rax # b = input(finputB)
+	mov	QWORD PTR -16[rbp], rax # b = input(..)
 
 	jmp	.L3
 .L4:
 	lea	rdi, .LC9[rip]              # запускаем ручной ввод
-	call	puts@PLT                # выводим сообщение "Input first string:"
+	call	puts@PLT
 	mov	rax, QWORD PTR stdin[rip]
 	mov	rdi, rax
 	call	input@PLT
-	mov	QWORD PTR -8[rbp], rax      # a = input(stdin)
+	mov	QWORD PTR -8[rbp], rax      # a = input(..)
 	lea	rdi, .LC10[rip]
-	call	puts@PLT                # выводим сообщение "Input second string:"
+	call	puts@PLT
 	mov	rax, QWORD PTR stdin[rip]
 	mov	rdi, rax
 	call	input@PLT
-	mov	QWORD PTR -16[rbp], rax     # b = input(stdin)
+	mov	QWORD PTR -16[rbp], rax     # b = input(..)
 .L3:
 	mov	rdx, QWORD PTR -16[rbp]
 	mov	rax, QWORD PTR -8[rbp]
@@ -166,3 +165,23 @@ main:
 .L8:
 	leave
 	ret
+
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 9.3.0-10ubuntu2) 9.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:
