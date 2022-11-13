@@ -62,9 +62,11 @@ endbr64
 В файле combination таким образом перенёс i со стека в r12d, а j - со стека в r13d
 Помимо этого, оптимизировал ситуации, где rax выступал в роли ненужного посредника для данных, которые требовалось снять со стека чтобы к примеру передать аргументом через rdi. Пример на картинках 
 ``` assembly
-
-![image](https://user-images.githubusercontent.com/44980361/201545168-e417057f-8c32-4fce-890f-160b03b6ff63.png)
-![image](https://user-images.githubusercontent.com/44980361/201545111-dddc0751-00ee-4419-8eb1-1a8c00720908.png)
+mov  rax, QWORD PTR -72[rbp]
+mov  rdi, rax
+превращается в
+mov  rdi, QWORD PTR -72[rbp]
+```
 
 
 
