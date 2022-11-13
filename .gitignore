@@ -2,3 +2,5 @@ idz1.s
 cmake-build-debug/
 .clang-format
 .idea
+*_f.s
+
