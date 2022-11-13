@@ -3,4 +3,4 @@ project(ACS C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(ACS main.c input.c combination.c)
+add_executable(ACS C_Files/main.c C_Files/input.c C_Files/combination.c)
